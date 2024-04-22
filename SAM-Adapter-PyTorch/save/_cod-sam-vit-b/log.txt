@@ -1,0 +1,11 @@
+train dataset: size=1330
+  inp: shape=(3, 1024, 1024)
+  gt: shape=(1, 1024, 1024)
+model: #params=93.8M
+train dataset: size=1330
+  inp: shape=(3, 1024, 1024)
+  gt: shape=(1, 1024, 1024)
+val dataset: size=540
+  inp: shape=(3, 1024, 1024)
+  gt: shape=(1, 1024, 1024)
+model: #params=93.8M

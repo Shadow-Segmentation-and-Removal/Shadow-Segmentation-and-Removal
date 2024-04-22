@@ -1,0 +1,644 @@
+Namespace(batch_size=7, nepoch=500, train_workers=0, eval_workers=8, dataset='ISTD', pretrain_weights='./log/model_best.pth', optimizer='adamw', lr_initial=0.0002, weight_decay=0.02, gpu='0', arch='ShadowFormer', mode='shadow', save_dir='./log', save_images=False, env='_istd', checkpoint=50, norm_layer='nn.LayerNorm', embed_dim=32, win_size=10, token_projection='linear', token_mlp='leff', att_se=False, vit_dim=320, vit_depth=12, vit_nheads=8, vit_mlp_dim=512, vit_patch_size=16, global_skip=False, local_skip=False, vit_share=False, train_ps=320, resume=False, train_dir='/teamspace/studios/this_studio/SAM-Adapter-PyTorch/ISTD_Dataset/train', val_dir='/teamspace/studios/this_studio/SAM-Adapter-PyTorch/ISTD_Dataset/test', warmup=True, warmup_epochs=3)
+ShadowFormer(
+  embed_dim=32, token_projection=linear, token_mlp=leff,win_size=10
+  (pos_drop): Dropout(p=0.0, inplace=False)
+  (input_proj): InputProj(
+    (proj): Sequential(
+      (0): Conv2d(4, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): LeakyReLU(negative_slope=0.01, inplace=True)
+    )
+  )
+  (output_proj): OutputProj(
+    (proj): Sequential(
+      (0): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+  )
+  (encoderlayer_0): BasicShadowFormer(
+    dim=32, input_resolution=(320, 320), depth=2
+    (blocks): ModuleList(
+      (0): CATransformerBlock(
+        dim=32, input_resolution=(320, 320), num_heads=1, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+        (drop_path): Identity()
+        (norm2): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=32, out_features=128, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=128)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=128, out_features=32, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(32, 8, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(8, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): CATransformerBlock(
+        dim=32, input_resolution=(320, 320), num_heads=1, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+        (drop_path): DropPath(drop_prob=0.014)
+        (norm2): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=32, out_features=128, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=128)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=128, out_features=32, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(32, 8, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(8, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+  (dowsample_0): Downsample(
+    (conv): Sequential(
+      (0): Conv2d(32, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+    )
+  )
+  (encoderlayer_1): BasicShadowFormer(
+    dim=64, input_resolution=(160, 160), depth=2
+    (blocks): ModuleList(
+      (0): CATransformerBlock(
+        dim=64, input_resolution=(160, 160), num_heads=2, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (drop_path): DropPath(drop_prob=0.029)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=64, out_features=256, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=256, out_features=64, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(64, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(16, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): CATransformerBlock(
+        dim=64, input_resolution=(160, 160), num_heads=2, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (drop_path): DropPath(drop_prob=0.043)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=64, out_features=256, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=256, out_features=64, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(64, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(16, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+  (dowsample_1): Downsample(
+    (conv): Sequential(
+      (0): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+    )
+  )
+  (encoderlayer_2): BasicShadowFormer(
+    dim=128, input_resolution=(80, 80), depth=2
+    (blocks): ModuleList(
+      (0): SIMTransformerBlock(
+        dim=128, input_resolution=(80, 80), num_heads=4, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (attn): WindowAttention(
+          dim=128, win_size=(10, 10), num_heads=4
+          (qkv): LinearProjection(
+            (to_q): Linear(in_features=128, out_features=128, bias=True)
+            (to_kv): Linear(in_features=128, out_features=256, bias=True)
+          )
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=128, out_features=128, bias=True)
+          (ll): Identity()
+          (proj_drop): Dropout(p=0.0, inplace=False)
+          (softmax): Softmax(dim=-1)
+        )
+        (drop_path): DropPath(drop_prob=0.057)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=128, out_features=512, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=512, out_features=128, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): SIMTransformerBlock(
+        dim=128, input_resolution=(80, 80), num_heads=4, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (attn): WindowAttention(
+          dim=128, win_size=(10, 10), num_heads=4
+          (qkv): LinearProjection(
+            (to_q): Linear(in_features=128, out_features=128, bias=True)
+            (to_kv): Linear(in_features=128, out_features=256, bias=True)
+          )
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=128, out_features=128, bias=True)
+          (ll): Identity()
+          (proj_drop): Dropout(p=0.0, inplace=False)
+          (softmax): Softmax(dim=-1)
+        )
+        (drop_path): DropPath(drop_prob=0.071)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=128, out_features=512, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=512, out_features=128, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+  (dowsample_2): Downsample(
+    (conv): Sequential(
+      (0): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+    )
+  )
+  (conv): BasicShadowFormer(
+    dim=256, input_resolution=(40, 40), depth=2
+    (blocks): ModuleList(
+      (0): SIMTransformerBlock(
+        dim=256, input_resolution=(40, 40), num_heads=16, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): WindowAttention(
+          dim=256, win_size=(10, 10), num_heads=16
+          (qkv): LinearProjection(
+            (to_q): Linear(in_features=256, out_features=256, bias=True)
+            (to_kv): Linear(in_features=256, out_features=512, bias=True)
+          )
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=256, out_features=256, bias=True)
+          (ll): Identity()
+          (proj_drop): Dropout(p=0.0, inplace=False)
+          (softmax): Softmax(dim=-1)
+        )
+        (drop_path): DropPath(drop_prob=0.100)
+        (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=256, out_features=1024, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=1024, out_features=256, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): SIMTransformerBlock(
+        dim=256, input_resolution=(40, 40), num_heads=16, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): WindowAttention(
+          dim=256, win_size=(10, 10), num_heads=16
+          (qkv): LinearProjection(
+            (to_q): Linear(in_features=256, out_features=256, bias=True)
+            (to_kv): Linear(in_features=256, out_features=512, bias=True)
+          )
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=256, out_features=256, bias=True)
+          (ll): Identity()
+          (proj_drop): Dropout(p=0.0, inplace=False)
+          (softmax): Softmax(dim=-1)
+        )
+        (drop_path): DropPath(drop_prob=0.100)
+        (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=256, out_features=1024, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=1024, out_features=256, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+  (upsample_0): Upsample(
+    (deconv): Sequential(
+      (0): ConvTranspose2d(256, 128, kernel_size=(2, 2), stride=(2, 2))
+    )
+  )
+  (decoderlayer_0): BasicShadowFormer(
+    dim=256, input_resolution=(80, 80), depth=2
+    (blocks): ModuleList(
+      (0): SIMTransformerBlock(
+        dim=256, input_resolution=(80, 80), num_heads=8, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): WindowAttention(
+          dim=256, win_size=(10, 10), num_heads=8
+          (qkv): LinearProjection(
+            (to_q): Linear(in_features=256, out_features=256, bias=True)
+            (to_kv): Linear(in_features=256, out_features=512, bias=True)
+          )
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=256, out_features=256, bias=True)
+          (ll): Identity()
+          (proj_drop): Dropout(p=0.0, inplace=False)
+          (softmax): Softmax(dim=-1)
+        )
+        (drop_path): DropPath(drop_prob=0.071)
+        (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=256, out_features=1024, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=1024, out_features=256, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): SIMTransformerBlock(
+        dim=256, input_resolution=(80, 80), num_heads=8, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): WindowAttention(
+          dim=256, win_size=(10, 10), num_heads=8
+          (qkv): LinearProjection(
+            (to_q): Linear(in_features=256, out_features=256, bias=True)
+            (to_kv): Linear(in_features=256, out_features=512, bias=True)
+          )
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=256, out_features=256, bias=True)
+          (ll): Identity()
+          (proj_drop): Dropout(p=0.0, inplace=False)
+          (softmax): Softmax(dim=-1)
+        )
+        (drop_path): DropPath(drop_prob=0.057)
+        (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=256, out_features=1024, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=1024, out_features=256, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+  (upsample_1): Upsample(
+    (deconv): Sequential(
+      (0): ConvTranspose2d(256, 64, kernel_size=(2, 2), stride=(2, 2))
+    )
+  )
+  (decoderlayer_1): BasicShadowFormer(
+    dim=128, input_resolution=(160, 160), depth=2
+    (blocks): ModuleList(
+      (0): CATransformerBlock(
+        dim=128, input_resolution=(160, 160), num_heads=4, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (drop_path): DropPath(drop_prob=0.043)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=128, out_features=512, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=512, out_features=128, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): CATransformerBlock(
+        dim=128, input_resolution=(160, 160), num_heads=4, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (drop_path): DropPath(drop_prob=0.029)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=128, out_features=512, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=512, out_features=128, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+  (upsample_2): Upsample(
+    (deconv): Sequential(
+      (0): ConvTranspose2d(128, 32, kernel_size=(2, 2), stride=(2, 2))
+    )
+  )
+  (decoderlayer_2): BasicShadowFormer(
+    dim=64, input_resolution=(320, 320), depth=2
+    (blocks): ModuleList(
+      (0): CATransformerBlock(
+        dim=64, input_resolution=(320, 320), num_heads=2, win_size=10, shift_size=0, mlp_ratio=4.0
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (drop_path): DropPath(drop_prob=0.014)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=64, out_features=256, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=256, out_features=64, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(64, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(16, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+      (1): CATransformerBlock(
+        dim=64, input_resolution=(320, 320), num_heads=2, win_size=10, shift_size=5, mlp_ratio=4.0
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (drop_path): Identity()
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlp): LeFF(
+          (linear1): Sequential(
+            (0): Linear(in_features=64, out_features=256, bias=True)
+            (1): GELU(approximate='none')
+          )
+          (dwconv): Sequential(
+            (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=256)
+            (1): GELU(approximate='none')
+          )
+          (linear2): Sequential(
+            (0): Linear(in_features=256, out_features=64, bias=True)
+          )
+        )
+        (CAB): CAB(
+          (CA): CALayer(
+            (avg_pool): AdaptiveAvgPool2d(output_size=1)
+            (conv_du): Sequential(
+              (0): Conv2d(64, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (1): ReLU(inplace=True)
+              (2): Conv2d(16, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (3): Sigmoid()
+            )
+          )
+          (body): Sequential(
+            (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): PReLU(num_parameters=1)
+            (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          )
+        )
+      )
+    )
+  )
+)
+Epoch: 1	Time: 229.7028	Loss: 48.4930	LearningRate 0.000133
